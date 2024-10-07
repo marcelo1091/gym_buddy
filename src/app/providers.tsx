@@ -1,0 +1,51 @@
+"use client"
+
+import { Header } from "@/components/Header/Header";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { getAuth, User } from "firebase/auth";
+import { firebaseConfig } from "./firebase/clientApp";
+import { initializeApp } from "firebase/app";
+import { createTheme, ThemeProvider } from "@mui/material";
+
+export const Providers = ({ children }: { children: React.ReactNode }) => {
+    const [user, setUser] = useState<User>()
+    const router = useRouter();
+    const pathname = usePathname()
+    initializeApp(firebaseConfig)
+    const auth = getAuth();
+    const excludePaths = !pathname.includes("resetpassword") &&
+        !pathname.includes("setnewpassword") &&
+        !pathname.includes("signup") &&
+        !pathname.includes("signin") &&
+        !pathname.includes("completeprofile")
+    useEffect(() => {
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                setUser(user)
+            } else {
+                setUser(undefined)
+                if (excludePaths)
+                    router.push("/auth/signin");
+            }
+        })
+    }, [auth])
+
+    const theme = createTheme({
+        palette: {
+            primary: { main: "#6b75ff", },
+            error: { main: "#ff5858", }
+        }
+
+    });
+
+    if (user && pathname.includes("completeprofile")) {
+        return (<ThemeProvider theme={theme}><div style={{ marginTop: "8px" }}>{children}</ div></ThemeProvider>)
+    }
+
+    return (
+        <ThemeProvider theme={theme}>
+            {user ? (<><Header /><div style={{ marginTop: "8px" }}>{children}</div></>) : excludePaths ? <></> : children}
+        </ThemeProvider>
+    )
+}
