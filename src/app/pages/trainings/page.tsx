@@ -1,4 +1,4 @@
-import { Trainings } from "./training";
+import { Trainings } from "./trainings";
 
 
 const TrainingsPage = () => {

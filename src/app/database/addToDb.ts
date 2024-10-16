@@ -14,19 +14,8 @@ export const addToDb = async ({ collectionName, id, data, notificationText }: Ad
   const notifySucces = () => toast.success(notificationText);
   const notifyError = () => toast.error("Something whent wrong!");
 
-  try {
-    await setDoc(
-      doc(db, collectionName, id ?? ""),
-      data
-    );
-    if (data) {
-      notificationText && notifySucces()
-      return true
-    } else {
-      return false
-    }
-  } catch (e) {
-    notifyError()
-    console.error("Error adding document: ", e);
-  }
+  setDoc(
+    doc(db, collectionName, id ?? ""),
+    data
+  ).then(value => value).catch((e) => e)
 };

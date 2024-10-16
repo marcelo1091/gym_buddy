@@ -5,12 +5,18 @@ type GetFromDbType = {
   collectionName: string;
   fieldId?: string
   comparisonType?: WhereFilterOp
-  fildValue?: string | number
+  fildValue?: string | boolean | number
+  secFieldId?: string
+  secComparisonType?: WhereFilterOp
+  secFildValue?: string | boolean | number
 }
 
-export const getFromDb = async ({ collectionName, fieldId, comparisonType, fildValue }: GetFromDbType) => {
+export const getFromDb = async ({ collectionName, fieldId, comparisonType, fildValue, secFieldId, secComparisonType, secFildValue }: GetFromDbType) => {
   let firestoreRef
-  if (fieldId !== undefined && comparisonType !== undefined && fildValue !== undefined) {
+  if (fieldId !== undefined && comparisonType !== undefined && fildValue !== undefined && secFieldId !== undefined && secComparisonType !== undefined && secFildValue !== undefined) {
+    firestoreRef = query(collection(db, collectionName), where(secFieldId, secComparisonType, secFildValue), where(fieldId, comparisonType, fildValue))
+  }
+  else if (fieldId !== undefined && comparisonType !== undefined && fildValue !== undefined) {
     firestoreRef = query(collection(db, collectionName), where(fieldId, comparisonType, fildValue))
   } else {
     firestoreRef = collection(db, collectionName)

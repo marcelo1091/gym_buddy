@@ -44,8 +44,7 @@ export const TrainingPlans = () => {
                         )
                         :
                         (
-                            // <PlanTable plans={plans} />
-                            <PlansList plans={plans.map(plan => ({ id: plan.id, planName: plan.data.plan_name }))} />
+                            <PlansList plans={plans.map(plan => ({ id: plan.id, planName: plan.data.plan_name, active: plan.data.active }))} />
                         )
                     }
 

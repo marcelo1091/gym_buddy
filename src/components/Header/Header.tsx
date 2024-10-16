@@ -13,23 +13,16 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import { usePathname, useRouter } from "next/navigation";
-import Link from 'next/link';
 import { getAuth } from 'firebase/auth';
-import { Loading } from '../Loading/Loading';
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 
 export function Header() {
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-    const [loading, setLoading] = useState(false)
     const auth = getAuth();
     const router = useRouter();
     const pathname = usePathname()
-
-    useEffect(() => {
-        setLoading(false)
-    }, [pathname])
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -41,7 +34,6 @@ export function Header() {
     const handleCloseNavMenu = (path: string) => {
         if (path !== pathname) {
             router.push(path)
-            setLoading(true)
         }
         setAnchorElNav(null);
     }
@@ -87,7 +79,7 @@ export function Header() {
             <AppBar position="static" color='inherit'>
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
-                        <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                        <FitnessCenterIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
                         <Typography
                             variant="h6"
                             noWrap
@@ -103,7 +95,7 @@ export function Header() {
                                 textDecoration: 'none',
                             }}
                         >
-                            LOGO
+                            GYM BUDDY
                         </Typography>
 
                         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -136,7 +128,7 @@ export function Header() {
                                 <HeaderItems />
                             </Menu>
                         </Box>
-                        <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+                        <FitnessCenterIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
                         <Typography
                             variant="h5"
                             noWrap
@@ -153,7 +145,7 @@ export function Header() {
                                 textDecoration: 'none',
                             }}
                         >
-                            LOGO
+                            GYM BUDDY
                         </Typography>
                         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                             <HeaderItems />
@@ -188,7 +180,6 @@ export function Header() {
                     </Toolbar>
                 </Container>
             </AppBar>
-            {loading && <Loading />}
         </>
     );
 }

@@ -7,18 +7,23 @@ import { getAuth, User } from "firebase/auth";
 import { firebaseConfig } from "./firebase/clientApp";
 import { initializeApp } from "firebase/app";
 import { createTheme, ThemeProvider } from "@mui/material";
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User>()
     const router = useRouter();
     const pathname = usePathname()
-    initializeApp(firebaseConfig)
     const auth = getAuth();
+
+    initializeApp(firebaseConfig)
+
     const excludePaths = !pathname.includes("resetpassword") &&
         !pathname.includes("setnewpassword") &&
         !pathname.includes("signup") &&
         !pathname.includes("signin") &&
         !pathname.includes("completeprofile")
+
     useEffect(() => {
         auth.onAuthStateChanged(user => {
             if (user) {
@@ -45,7 +50,9 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
 
     return (
         <ThemeProvider theme={theme}>
-            {user ? (<><Header /><div style={{ marginTop: "8px" }}>{children}</div></>) : excludePaths ? <></> : children}
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                {user ? (<><Header /><div style={{ marginTop: "8px" }}>{children}</div></>) : excludePaths ? <></> : children}
+            </LocalizationProvider>
         </ThemeProvider>
     )
 }

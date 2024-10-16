@@ -13,4 +13,5 @@ export type ExercisePlansType = {
     user_id: string
     plan_name: string
     plan: ExerciseByDayType[]
+    active: boolean
 }
