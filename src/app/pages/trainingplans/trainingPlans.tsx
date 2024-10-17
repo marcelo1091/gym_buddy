@@ -15,7 +15,7 @@ export const TrainingPlans = () => {
     const [loading, setLoading] = useState(false)
     const router = useRouter();
     const auth = getAuth()
-    console.log(plans)
+
     useEffect(() => {
         if (auth.currentUser?.uid) {
             getFromDb({ collectionName: "training_plans", fieldId: "user_id", comparisonType: "==", fildValue: auth.currentUser?.uid })

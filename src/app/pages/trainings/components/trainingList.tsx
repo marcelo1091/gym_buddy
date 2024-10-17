@@ -10,8 +10,9 @@ import { TrainingType } from "../types";
 import { useState } from "react";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat"
+import { ExercisePlansType } from "../../trainingplans/types";
 
-export const TrainingsList = ({ trainings }: { trainings?: TrainingType[] }) => {
+export const TrainingsList = ({ trainings, trainingPlans }: { trainings?: TrainingType[], trainingPlans?: ExercisePlansType[] }) => {
     const [removedIds, setRemovedIds] = useState<string[]>([])
     const [loading, setLoading] = useState(false)
     const router = useRouter();
@@ -21,9 +22,9 @@ export const TrainingsList = ({ trainings }: { trainings?: TrainingType[] }) => 
         event.preventDefault()
         setLoading(true)
 
-        removeFromDb({ collectionName: "trainings", id })
+        removeFromDb({ collectionName: "trainings", id, notificationText: "Success removed trainin" })
             .then(() => {
-                setLoading(false); console.log("success removed training"); setRemovedIds(ids => [...ids, id])
+                setLoading(false); setRemovedIds(ids => [...ids, id])
             })
             .catch((err: any) => {
                 setLoading(false); console.error(err.message)
@@ -67,7 +68,7 @@ export const TrainingsList = ({ trainings }: { trainings?: TrainingType[] }) => 
                                 <ListItemButton
                                     onClick={() => router.push(`/pages/trainings/training?id=${training.id}`)}
                                     style={{ display: "flex", flexDirection: "column", alignItems: "start" }} >
-                                    <ListItemText primary={`${getDate(training.date)} ${training.day_name}`} />
+                                    <ListItemText primary={`${getDate(training.date)} | Plan ${trainingPlans?.find(plan => plan.id === training.plan_id)?.plan_name} | ${training.day_name}`} />
                                     {checkTrainingIsDone(training)}
                                 </ListItemButton>
 

@@ -10,6 +10,7 @@ export type SerieseType = {
 
 export type TrainingExerciseType = {
     ex_id: string
+    ex_name: string
     done: boolean
     seriese?: SerieseType[]
 }

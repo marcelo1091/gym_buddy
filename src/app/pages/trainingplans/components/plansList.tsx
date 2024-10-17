@@ -1,3 +1,5 @@
+"use client"
+
 import { Button, Chip, Divider, IconButton, List, ListItem, ListItemButton, ListItemText } from "@mui/material"
 import { useRouter } from "next/navigation";
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -31,9 +33,9 @@ export const PlansList = ({ plans }: { plans: PlanListType[] }) => {
         event.preventDefault()
         setLoading(true)
 
-        removeFromDb({ collectionName: "training_plans", id })
+        removeFromDb({ collectionName: "training_plans", id, notificationText: "Success removed training plan" })
             .then(() => {
-                setLoading(false); console.log("success removed"); setRemovedIds(ids => [...ids, id])
+                setLoading(false); setRemovedIds(ids => [...ids, id])
             })
             .catch((err: any) => {
                 setLoading(false); console.error(err.message)
@@ -42,11 +44,11 @@ export const PlansList = ({ plans }: { plans: PlanListType[] }) => {
 
     const onActivePlan = (id: string, event: React.MouseEvent) => {
         event.preventDefault()
+        event.stopPropagation()
 
         if (activePlan) {
             updateDb({ collectionName: "training_plans", id: activePlan, data: { active: false } })
                 .then(() => {
-                    console.log("success")
                     setLoading(false)
                 })
                 .catch((err: any) => {
@@ -55,11 +57,9 @@ export const PlansList = ({ plans }: { plans: PlanListType[] }) => {
                 })
         }
 
-
         if (auth.currentUser) {
-            updateDb({ collectionName: "training_plans", id: id, data: { active: true } })
+            updateDb({ collectionName: "training_plans", id: id, data: { active: true }, notificationText: "Training plan set to active" })
                 .then(() => {
-                    console.log("success")
                     setLoading(false)
                     setActivePlan(id)
                 })
@@ -80,24 +80,23 @@ export const PlansList = ({ plans }: { plans: PlanListType[] }) => {
                         <div key={plan.id}>
                             <ListItem disablePadding style={{ minHeight: 48 }} secondaryAction={
                                 <>
-                                    <IconButton edge="end">
-                                        {activePlan === plan.id ? (
-                                            <Chip label="Active Plan" color="success" variant="outlined" />
-                                        ) : (
-                                            <Button variant="text" onClick={(event) => onActivePlan(plan.id, event)}>
-                                                Set Active
-                                            </Button>
-                                        )}
-                                    </IconButton>
                                     <IconButton edge="end" aria-label="delete" onClick={(event) => removePlan(plan.id, event)}>
                                         <DeleteIcon color="error" />
                                     </IconButton>
                                 </>
                             }>
-                                <ListItemButton onClick={() => router.push(`/pages/trainingplans/plan?id=${plan.id}`)}>
+                                <ListItemButton
+                                    onClick={() => router.push(`/pages/trainingplans/plan?id=${plan.id}`)}
+                                    style={{ display: "flex", flexDirection: "column", alignItems: "start" }} >
                                     <ListItemText primary={plan.planName} style={{ width: "95%" }} />
+                                    {activePlan === plan.id ? (
+                                        <Chip label="Active Plan" color="success" variant="outlined" />
+                                    ) : (
+                                        <Button variant="text" onClick={(event) => onActivePlan(plan.id, event)}>
+                                            Set Active
+                                        </Button>
+                                    )}
                                 </ListItemButton>
-
                             </ListItem>
                             <Divider />
                         </div>

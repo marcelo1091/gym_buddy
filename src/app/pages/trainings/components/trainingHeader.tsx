@@ -23,12 +23,7 @@ export const TrainingHeader = ({ trainingPlan, id, preview, setTrainingDate, set
                 <Typography textAlign={"start"} color="textPrimary" variant="h6" component="h6" minWidth={150}>
                     Training date
                 </Typography>
-                {preview ?
-                    <DatePicker label="Select training date" value={dayjs(trainingDate)} onChange={(date) => setTrainingDate(date?.toString())} disabled={preview} />
-                    :
-                    <DatePicker label="Select training date" onChange={(date) => setTrainingDate(date?.toString())} disabled={preview} />
-                }
-
+                <DatePicker label="Select training date" value={trainingDate ? dayjs(trainingDate) : null} onChange={(date) => setTrainingDate(date?.toString())} disabled={preview} />
             </Grid>
             {(trainingDate || preview) && (
                 <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6 }} display={"flex"} justifyContent={"space-between"} flexDirection={"row"} alignItems={"center"} gap={2}>

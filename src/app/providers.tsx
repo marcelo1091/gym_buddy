@@ -9,6 +9,7 @@ import { initializeApp } from "firebase/app";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { ToastContainer } from "react-toastify";
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User>()
@@ -53,6 +54,8 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 {user ? (<><Header /><div style={{ marginTop: "8px" }}>{children}</div></>) : excludePaths ? <></> : children}
             </LocalizationProvider>
+            <ToastContainer position="bottom-right" />
+            <p style={{ position: "fixed", right: 10, bottom: 10 }}>Version: 0.1</p>
         </ThemeProvider>
     )
 }

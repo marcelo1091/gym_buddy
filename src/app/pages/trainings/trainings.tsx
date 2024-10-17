@@ -7,9 +7,11 @@ import { useEffect, useState } from "react";
 import { TrainingType } from "./types";
 import { getFromDb } from "@/app/database/getFromDb";
 import { TrainingsList } from "./components/trainingList";
+import { ExercisePlansType } from "../trainingplans/types";
 
 export const Trainings = () => {
     const [trainings, setTrainings] = useState<{ data: TrainingType, id: string }[]>()
+    const [trainingPlans, setTrainingPlans] = useState<ExercisePlansType[]>()
     const router = useRouter();
     const auth = getAuth()
 
@@ -20,6 +22,26 @@ export const Trainings = () => {
                 .catch((err: any) => console.error(err.message))
         }
     }, [])
+
+    useEffect(() => {
+        getTrainingPlans()
+    }, [auth])
+
+    const getTrainingPlans = () => {
+        if (auth.currentUser?.uid) {
+            getFromDb({
+                collectionName: "training_plans",
+                fieldId: "user_id",
+                comparisonType: "==",
+                fildValue: auth.currentUser?.uid
+            })
+                .then(data => {
+                    const mapData: ExercisePlansType[] = data.data.map(item => ({ ...item.data as ExercisePlansType }))
+                    setTrainingPlans(mapData);
+                })
+                .catch((err: any) => console.error(err.message))
+        }
+    }
 
     return (
         <Grid container spacing={2} size={12} mt={10} display={"flex"} flexDirection={"column"} alignItems={"center"}>
@@ -33,7 +55,7 @@ export const Trainings = () => {
                     </Button>
                 </Grid>
                 <Grid size={12} mt={4}>
-                    <TrainingsList trainings={trainings?.map(training => training.data)} />
+                    <TrainingsList trainings={trainings?.map(training => training.data)} trainingPlans={trainingPlans} />
                 </Grid>
             </Grid>
         </Grid>

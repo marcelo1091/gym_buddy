@@ -14,18 +14,12 @@ export const removeFromDb = async ({ collectionName, id, data, notificationText 
   const notifySucces = () => toast.success(notificationText);
   const notifyError = () => toast.error("Something whent wrong!");
 
-  try {
-    await deleteDoc(
-      doc(db, collectionName, id ?? "")
-    );
-    if (data) {
-      notificationText && notifySucces()
-      return true
-    } else {
-      return false
-    }
-  } catch (e) {
+  deleteDoc(
+    doc(db, collectionName, id ?? "")
+  ).then(() => {
+    notificationText && notifySucces()
+  }).catch((e) => {
     notifyError()
     console.error("Error removing document: ", e);
-  }
+  })
 };

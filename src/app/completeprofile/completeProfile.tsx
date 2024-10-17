@@ -41,7 +41,14 @@ export const CompleteProfile = () => {
         setLoading(true)
 
         if (auth.currentUser) {
-            addToDb({ collectionName: "profiles", id: auth.currentUser.uid, data: { id: uuidv4(), name: name, city: city, gym: gym } })
+            addToDb({
+                collectionName: "profiles", id: auth.currentUser.uid, data: {
+                    id: uuidv4(),
+                    name: name,
+                    city: city,
+                    gym: gym
+                }
+            })
                 .then(() => {
                     console.log("success")
                     router.push("/pages/dashboard")
