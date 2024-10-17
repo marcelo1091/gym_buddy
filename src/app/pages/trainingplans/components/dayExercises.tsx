@@ -48,7 +48,7 @@ export const DayExercises = ({ addExercise, preview, prevExercises }: DayExercis
                     width={"100%"}
                 >
                     {exercises.map((item, i) =>
-                        <Grid size={{ xs: 12, sm: 6, md: 6, lg: 4 }} display={"flex"} gap={2} alignItems={"center"} justifyContent={"space-between"}>
+                        <Grid key={item.id} size={{ xs: 12, sm: 6, md: 6, lg: 4 }} display={"flex"} gap={2} alignItems={"center"} justifyContent={"space-between"}>
                             <FormControl variant="outlined" size="small" fullWidth >
                                 <InputLabel htmlFor="outlined-adornment-password">{`Exercise ${i + 1}`}</InputLabel>
                                 <OutlinedInput

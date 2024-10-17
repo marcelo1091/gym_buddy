@@ -20,8 +20,11 @@ type TrainingTypeProps = {
 
 export const Training = ({ preview }: TrainingTypeProps) => {
     const [id, setId] = useState<string | undefined>(undefined)
+    const [isPreview, setIsPreview] = useState(preview)
     const [loading, setLoading] = useState(false)
     const [trainingPlan, setTrainingPlan] = useState<ExercisePlansType>()
+    const [trainingPlanId, setTrainingPlanId] = useState<string>()
+    const [trainingPlanIdFromTraining, setTrainingPlanIdFromTraining] = useState<string>()
     const [currentExercise, setCurrentExercise] = useState<string | undefined>()
     const [trainingDate, setTrainingDate] = useState<string | undefined>(undefined)
     const [dayId, setDayId] = useState<string | undefined>(undefined)
@@ -60,19 +63,39 @@ export const Training = ({ preview }: TrainingTypeProps) => {
 
     useEffect(() => {
         if (auth.currentUser?.uid) {
-            getFromDb({
-                collectionName: "training_plans",
-                fieldId: "user_id",
-                comparisonType: "==",
-                fildValue: auth.currentUser?.uid,
-                secFieldId: "active",
-                secComparisonType: "==",
-                secFildValue: true
-            })
-                .then(data => setTrainingPlan(data.data[0].data as ExercisePlansType))
-                .catch((err: any) => console.error(err.message))
+
+            if (id && trainingPlanIdFromTraining) {
+                getFromDb({
+                    collectionName: "training_plans",
+                    fieldId: "id",
+                    comparisonType: "==",
+                    fildValue: trainingPlanIdFromTraining,
+                })
+                    .then(data => {
+                        setTrainingPlan(data.data[0].data as ExercisePlansType);
+                        setTrainingPlanId(data.data[0].data.id)
+                    })
+                    .catch((err: any) => console.error(err.message))
+            } else if (!trainingPlanId) {
+                getFromDb({
+                    collectionName: "training_plans",
+                    fieldId: "user_id",
+                    comparisonType: "==",
+                    fildValue: auth.currentUser?.uid,
+                    secFieldId: "active",
+                    secComparisonType: "==",
+                    secFildValue: true
+                })
+                    .then(data => {
+                        if (trainingPlanId !== data.data[0].data.id) {
+                            setTrainingPlan(data.data[0].data as ExercisePlansType);
+                            setTrainingPlanId(data.data[0].data.id)
+                        }
+                    })
+                    .catch((err: any) => console.error(err.message))
+            }
         }
-    }, [])
+    }, [id, trainingPlanIdFromTraining])
 
     useEffect(() => {
         if (auth.currentUser?.uid && id) {
@@ -83,6 +106,7 @@ export const Training = ({ preview }: TrainingTypeProps) => {
                     setDayId(training.day_id)
                     setDayName(training.day_name)
                     setExercises(training.exercises)
+                    setTrainingPlanIdFromTraining(training.plan_id)
                 })
                 .catch((err: any) => console.error(err.message))
         }
@@ -130,7 +154,8 @@ export const Training = ({ preview }: TrainingTypeProps) => {
                     plan_id: trainingPlan?.id,
                     user_id: auth.currentUser.uid,
                     exercises: exercises?.map(e => e.ex_id === id ? ({ ...e, done: true }) : e)
-                }
+                },
+                notificationText: "Training saved"
             })
                 .then(() => {
                     setLoading(false)
@@ -155,7 +180,8 @@ export const Training = ({ preview }: TrainingTypeProps) => {
                     plan_id: trainingPlan?.id,
                     user_id: auth.currentUser.uid,
                     exercises: exercises?.map(e => e.ex_id === ex_id ? ({ ...e, done: true }) : e)
-                }
+                },
+                notificationText: "Training saved"
             })
                 .then(() => {
                     setLoading(false)
@@ -180,20 +206,40 @@ export const Training = ({ preview }: TrainingTypeProps) => {
         }
     };
 
+    const onEditMode = () => {
+        setIsPreview(false)
+    }
 
 
     return (
         <Grid container spacing={2} size={12} margin={2} mt={8} display={"flex"} flexDirection={"column"} alignItems={"center"} >
-            <Button variant="outlined" onClick={() => router.push("/pages/trainings")} fullWidth>
-                Back to list
-            </Button>
+            {isPreview ? (
+                <Grid container size={{ xs: 12, md: 8 }}>
+                    <Grid container size={{ xs: 12, md: 6 }}>
+                        <Button variant="outlined" onClick={() => router.push("/pages/trainings")} fullWidth >
+                            Back
+                        </Button>
+                    </Grid>
+                    <Grid container size={{ xs: 12, md: 6 }}>
+                        <Button variant="contained" fullWidth onClick={onEditMode} >
+                            Edit Training
+                        </Button>
+                    </Grid>
+                </Grid>
+            ) : (
+                <Grid container size={{ xs: 12, md: 8 }}>
+                    <Button variant="outlined" onClick={() => router.push("/pages/trainings")} fullWidth >
+                        Back
+                    </Button>
+                </Grid>
+            )}
             <Grid container spacing={2} size={12} display={"flex"} justifyContent={"center"} mt={2}>
                 <TrainingHeader
                     setDayId={setDayId}
                     setTrainingDate={setTrainingDate}
                     trainingPlan={trainingPlan}
                     id={id}
-                    preview={preview}
+                    preview={isPreview}
                     trainingDate={trainingDate}
                     trainingDayId={dayId}
                 />
@@ -214,7 +260,7 @@ export const Training = ({ preview }: TrainingTypeProps) => {
                             onCheck={onCheck}
                             handleChange={handleChange}
                             onRemoveSeries={onRemoveSeries}
-                            preview={preview}
+                            preview={isPreview}
                             trainingExercise={exercises?.find(exercise => exercise.ex_id === item.id)}
                             isDone={exercises?.find(exercise => exercise.ex_id === item.id)?.done ?? false}
                         />

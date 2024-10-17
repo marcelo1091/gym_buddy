@@ -14,19 +14,15 @@ export const updateDb = async ({ collectionName, id, data, notificationText }: U
   const notifySucces = () => toast.success(notificationText);
   const notifyError = () => toast.error("Something whent wrong!");
 
-  try {
-    await updateDoc(
-      doc(db, collectionName, id ?? ""),
-      data
-    );
-    if (data) {
-      notificationText && notifySucces()
-      return true
-    } else {
-      return false
-    }
-  } catch (e) {
+
+  updateDoc(
+    doc(db, collectionName, id ?? ""),
+    data
+  ).then(() => {
+    notificationText && notifySucces()
+  }).catch((e) => {
     notifyError()
     console.error("Error updating document: ", e);
-  }
+  })
+
 };

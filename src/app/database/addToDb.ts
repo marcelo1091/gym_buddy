@@ -17,5 +17,10 @@ export const addToDb = async ({ collectionName, id, data, notificationText }: Ad
   setDoc(
     doc(db, collectionName, id ?? ""),
     data
-  ).then(value => value).catch((e) => e)
+  ).then(() => {
+    notificationText && notifySucces()
+  }).catch((e) => {
+    notifyError()
+    console.error("Error adding document: ", e);
+  })
 };

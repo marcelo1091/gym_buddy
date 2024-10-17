@@ -21,9 +21,9 @@ export const TrainingsList = ({ trainings }: { trainings?: TrainingType[] }) => 
         event.preventDefault()
         setLoading(true)
 
-        removeFromDb({ collectionName: "trainings", id })
+        removeFromDb({ collectionName: "trainings", id, notificationText: "Success removed trainin" })
             .then(() => {
-                setLoading(false); console.log("success removed training"); setRemovedIds(ids => [...ids, id])
+                setLoading(false); setRemovedIds(ids => [...ids, id])
             })
             .catch((err: any) => {
                 setLoading(false); console.error(err.message)

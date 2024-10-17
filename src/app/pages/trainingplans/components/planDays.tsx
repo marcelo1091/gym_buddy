@@ -54,7 +54,15 @@ export const PlanDays = ({ planName, preview, prevPlanDays, id, setPreview }: Pl
         e.preventDefault();
         setLoading(true)
         if (auth.currentUser) {
-            addToDb({ collectionName: "training_plans", id: newPlanId, data: { id: newPlanId, user_id: auth.currentUser.uid, plan_name: planName, plan: planDays } })
+            addToDb({
+                collectionName: "training_plans", id: newPlanId, data: {
+                    id: newPlanId,
+                    user_id: auth.currentUser.uid,
+                    plan_name: planName,
+                    plan: planDays
+                },
+                notificationText: "Training plan added"
+            })
                 .then(() => {
                     console.log("success")
                     setLoading(false)
@@ -71,9 +79,16 @@ export const PlanDays = ({ planName, preview, prevPlanDays, id, setPreview }: Pl
         e.preventDefault();
         setLoading(true)
         if (auth.currentUser) {
-            updateDb({ collectionName: "training_plans", id: id, data: { id: id, user_id: auth.currentUser.uid, plan_name: planName, plan: planDays } })
+            updateDb({
+                collectionName: "training_plans", id: id, data: {
+                    id: id,
+                    user_id: auth.currentUser.uid,
+                    plan_name: planName,
+                    plan: planDays
+                },
+                notificationText: "Training plan saved"
+            })
                 .then(() => {
-                    console.log("success")
                     setLoading(false)
                     setPrevPlan(planDays)
                     setPreview(true)
