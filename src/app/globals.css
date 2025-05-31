@@ -1,3 +1,8 @@
+/* .leaflet-routing-alternatives-container,
+.leaflet-routing-container {
+  display: none;
+} */
+
 :root {
   --background: #ffffff;
   --foreground: #171717;

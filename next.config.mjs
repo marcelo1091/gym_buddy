@@ -10,7 +10,8 @@ const nextConfig = {
         MEASUREMENT_ID: process.env.MEASUREMENT_ID,
     },
     distDir: 'build',
-    output: 'export'
+    output: 'export',
+    reactStrictMode: false,
 };
 
 export default nextConfig;

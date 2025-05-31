@@ -1,4 +1,8 @@
-import { Dashboard } from "./dashboard";
+import dynamic from "next/dynamic";
+// import { Dashboard } from "./dashboard";
+const Dashboard = dynamic(() => import('./dashboard'), {
+  ssr: false,
+});
 
 
 const DashboardPage = () => {
